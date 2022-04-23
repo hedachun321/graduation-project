@@ -1,0 +1,1 @@
+java -jar application/target/thingsboard-3.2.2-boot.jar
