@@ -52,7 +52,7 @@ public class TenantController extends BaseController {
 
     @Autowired
     private TenantService tenantService;
-
+    //获取租户通过租户id
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN')")
     @RequestMapping(value = "/tenant/{tenantId}", method = RequestMethod.GET)
     @ResponseBody
@@ -60,6 +60,7 @@ public class TenantController extends BaseController {
         checkParameter("tenantId", strTenantId);
         try {
             TenantId tenantId = new TenantId(toUUID(strTenantId));
+            //查询租户id
             Tenant tenant = checkTenantId(tenantId, Operation.READ);
             if(!tenant.getAdditionalInfo().isNull()) {
                 processDashboardIdFromAdditionalInfo((ObjectNode) tenant.getAdditionalInfo(), HOME_DASHBOARD);
@@ -69,7 +70,7 @@ public class TenantController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取租户信息通过租户id
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN')")
     @RequestMapping(value = "/tenant/info/{tenantId}", method = RequestMethod.GET)
     @ResponseBody
@@ -82,7 +83,7 @@ public class TenantController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //保存租户信息
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     @RequestMapping(value = "/tenant", method = RequestMethod.POST)
     @ResponseBody
@@ -105,7 +106,7 @@ public class TenantController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //删除租户童话或租户id
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     @RequestMapping(value = "/tenant/{tenantId}", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
@@ -122,7 +123,7 @@ public class TenantController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //分页获取租户内容
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     @RequestMapping(value = "/tenants", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody

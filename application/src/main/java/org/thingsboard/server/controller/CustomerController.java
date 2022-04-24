@@ -47,7 +47,7 @@ public class CustomerController extends BaseController {
 
     public static final String CUSTOMER_ID = "customerId";
     public static final String IS_PUBLIC = "isPublic";
-
+    //获取客户通过客户id
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/customer/{customerId}", method = RequestMethod.GET)
     @ResponseBody
@@ -64,7 +64,7 @@ public class CustomerController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取客户信息通过id
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/customer/{customerId}/shortInfo", method = RequestMethod.GET)
     @ResponseBody
@@ -96,7 +96,7 @@ public class CustomerController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //保存客户信息
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/customer", method = RequestMethod.POST)
     @ResponseBody
@@ -121,7 +121,7 @@ public class CustomerController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //删除客户通过客户id
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/customer/{customerId}", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
@@ -146,7 +146,7 @@ public class CustomerController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //分页查询客户
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/customers", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody
@@ -163,7 +163,7 @@ public class CustomerController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取租户下面的客户
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/tenant/customers", params = {"customerTitle"}, method = RequestMethod.GET)
     @ResponseBody

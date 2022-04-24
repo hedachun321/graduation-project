@@ -58,7 +58,7 @@ public class AdminController extends BaseController {
 
     @Autowired
     private UpdateService updateService;
-
+    //获取系统设置
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     @RequestMapping(value = "/settings/{key}", method = RequestMethod.GET)
     @ResponseBody
@@ -74,7 +74,7 @@ public class AdminController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //保存系统设置
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     @RequestMapping(value = "/settings", method = RequestMethod.POST)
     @ResponseBody
@@ -93,7 +93,7 @@ public class AdminController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取系统安全设置
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     @RequestMapping(value = "/securitySettings", method = RequestMethod.GET)
     @ResponseBody
@@ -105,7 +105,7 @@ public class AdminController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //保存系统安全设置
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     @RequestMapping(value = "/securitySettings", method = RequestMethod.POST)
     @ResponseBody

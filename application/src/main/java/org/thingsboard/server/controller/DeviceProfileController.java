@@ -49,6 +49,9 @@ import java.util.UUID;
 @TbCoreComponent
 @RequestMapping("/api")
 @Slf4j
+/*
+设备配置接口
+ */
 public class DeviceProfileController extends BaseController {
 
     private static final String DEVICE_PROFILE_ID = "deviceProfileId";

@@ -74,12 +74,15 @@ import java.util.stream.Collectors;
 @RestController
 @TbCoreComponent
 @RequestMapping("/api")
+/*
+设备接口
+ */
 public class DeviceController extends BaseController {
 
     private static final String DEVICE_ID = "deviceId";
     private static final String DEVICE_NAME = "deviceName";
     private static final String TENANT_ID = "tenantId";
-
+    //获取设备通过设备id
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/device/{deviceId}", method = RequestMethod.GET)
     @ResponseBody
@@ -92,7 +95,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取设备信息通过设备id
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/device/info/{deviceId}", method = RequestMethod.GET)
     @ResponseBody
@@ -105,7 +108,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //保存设备相关信息
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/device", method = RequestMethod.POST)
     @ResponseBody
@@ -140,7 +143,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //删除设备相关信息
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/device/{deviceId}", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
@@ -167,7 +170,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //分配设备给客户
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/customer/{customerId}/device/{deviceId}", method = RequestMethod.POST)
     @ResponseBody
@@ -196,7 +199,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //取消分配设备给用户
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/customer/device/{deviceId}", method = RequestMethod.DELETE)
     @ResponseBody
@@ -224,7 +227,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //分配设备给公共客户
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/customer/public/device/{deviceId}", method = RequestMethod.POST)
     @ResponseBody
@@ -248,7 +251,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取设备凭证通过设备id
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/device/{deviceId}/credentials", method = RequestMethod.GET)
     @ResponseBody
@@ -269,7 +272,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //保存设备凭证id
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/device/credentials", method = RequestMethod.POST)
     @ResponseBody
@@ -292,7 +295,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取租户的设备
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/tenant/devices", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody
@@ -315,7 +318,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //分页查询设备信息
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/tenant/deviceInfos", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody
@@ -342,7 +345,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取租户下的设备
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/tenant/devices", params = {"deviceName"}, method = RequestMethod.GET)
     @ResponseBody
@@ -355,7 +358,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取客户设备
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/customer/{customerId}/devices", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody
@@ -382,7 +385,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //分页插叙客户下面的设备
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/customer/{customerId}/deviceInfos", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody
@@ -413,7 +416,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取设备通过设备id
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/devices", params = {"deviceIds"}, method = RequestMethod.GET)
     @ResponseBody
@@ -463,7 +466,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取设备类型
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/device/types", method = RequestMethod.GET)
     @ResponseBody

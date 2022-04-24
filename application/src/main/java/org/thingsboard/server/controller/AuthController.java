@@ -81,7 +81,7 @@ public class AuthController extends BaseController {
 
     @Autowired
     private AuditLogService auditLogService;
-
+    //获取用户
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/auth/user", method = RequestMethod.GET)
     public @ResponseBody User getUser() throws ThingsboardException {
@@ -92,14 +92,14 @@ public class AuthController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //用户登出
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/auth/logout", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void logout(HttpServletRequest request) throws ThingsboardException {
         logLogoutAction(request);
     }
-
+    //用户修改密码
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/auth/changePassword", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
@@ -157,7 +157,7 @@ public class AuthController extends BaseController {
         }
         return new ResponseEntity<>(headers, responseStatus);
     }
-    
+    //重置密码通过邮箱
     @RequestMapping(value = "/noauth/resetPasswordByEmail", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void requestResetPasswordByEmail (
@@ -176,7 +176,7 @@ public class AuthController extends BaseController {
             throw handleException(e);
         }
     }
-    
+    //重置密码
     @RequestMapping(value = "/noauth/resetPassword", params = { "resetToken" }, method = RequestMethod.GET)
     public ResponseEntity<String> checkResetToken(
             @RequestParam(value = "resetToken") String resetToken) {

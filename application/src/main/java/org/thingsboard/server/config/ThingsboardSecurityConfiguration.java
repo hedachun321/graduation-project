@@ -216,14 +216,18 @@ public class ThingsboardSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .addFilterBefore(buildWsJwtTokenAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(rateLimitProcessingFilter, UsernamePasswordAuthenticationFilter.class);
         if (oauth2Configuration != null) {
+            //oauth2Configuration已经注入到容器中
             http.oauth2Login()
                     .authorizationEndpoint()
                     .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
                     .authorizationRequestResolver(oAuth2AuthorizationRequestResolver)
                     .and()
                     .loginPage("/oauth2Login")
+                    //自定义登录界面
                     .loginProcessingUrl(oauth2Configuration.getLoginProcessingUrl())
+                    //授权成功处理器
                     .successHandler(oauth2AuthenticationSuccessHandler)
+                    //授权失败处理器
                     .failureHandler(oauth2AuthenticationFailureHandler);
         }
     }

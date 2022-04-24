@@ -42,6 +42,9 @@ import java.util.List;
 @RestController
 @TbCoreComponent
 @RequestMapping("/api")
+/*
+属性类型接口
+ */
 public class WidgetTypeController extends BaseController {
 
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN')")
