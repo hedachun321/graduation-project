@@ -59,6 +59,9 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @TbCoreComponent
 @RequestMapping("/api")
+/*
+用户接口
+ */
 public class UserController extends BaseController {
 
     public static final String USER_ID = "userId";
