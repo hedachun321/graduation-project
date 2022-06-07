@@ -39,7 +39,7 @@ export class DeviceService {
   constructor(
     private http: HttpClient
   ) { }
-
+  //获取租户设备信息
   public getTenantDeviceInfos(pageLink: PageLink, type: string = '',
                               config?: RequestConfig): Observable<PageData<DeviceInfo>> {
     return this.http.get<PageData<DeviceInfo>>(`/api/tenant/deviceInfos${pageLink.toQuery()}&type=${type}`,
@@ -51,7 +51,7 @@ export class DeviceService {
     return this.http.get<PageData<DeviceInfo>>(`/api/tenant/deviceInfos${pageLink.toQuery()}&deviceProfileId=${deviceProfileId}`,
       defaultHttpOptionsFromConfig(config));
   }
-
+  //获取客户设备信息
   public getCustomerDeviceInfos(customerId: string, pageLink: PageLink, type: string = '',
                                 config?: RequestConfig): Observable<PageData<DeviceInfo>> {
     return this.http.get<PageData<DeviceInfo>>(`/api/customer/${customerId}/deviceInfos${pageLink.toQuery()}&type=${type}`,
@@ -63,7 +63,7 @@ export class DeviceService {
     return this.http.get<PageData<DeviceInfo>>(`/api/customer/${customerId}/deviceInfos${pageLink.toQuery()}&deviceProfileId=${deviceProfileId}`,
       defaultHttpOptionsFromConfig(config));
   }
-
+  //获取设备
   public getDevice(deviceId: string, config?: RequestConfig): Observable<Device> {
     return this.http.get<Device>(`/api/device/${deviceId}`, defaultHttpOptionsFromConfig(config));
   }

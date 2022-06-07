@@ -96,7 +96,7 @@ public class DefaultTbRuleEngineConsumerService extends AbstractConsumerService<
     private final ConcurrentMap<String, TbRuleEngineQueueConfiguration> consumerConfigurations = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, TbRuleEngineConsumerStats> consumerStats = new ConcurrentHashMap<>();
     private ExecutorService submitExecutor;
-
+    //构造规则引擎消费服务
     public DefaultTbRuleEngineConsumerService(TbRuleEngineProcessingStrategyFactory processingStrategyFactory,
                                               TbRuleEngineSubmitStrategyFactory submitStrategyFactory,
                                               TbQueueRuleEngineSettings ruleEngineSettings,

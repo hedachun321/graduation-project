@@ -205,6 +205,7 @@ public class SqlTimeseriesLatestDao extends BaseAbstractSqlTimeseriesDao impleme
         if (entry.isPresent()) {
             TsKvLatestEntity tsKvLatestEntity = entry.get();
             tsKvLatestEntity.setStrKey(key);
+            //获取数据
             result = DaoUtil.getData(tsKvLatestEntity);
         } else {
             result = new BasicTsKvEntry(System.currentTimeMillis(), new StringDataEntry(key, null));

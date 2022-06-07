@@ -16,11 +16,12 @@
 package org.thingsboard.rule.engine.api;
 
 /**
- * Created by ashvayka on 19.01.18.
+ * 2022.02.18.
  */
 public final class TbRelationTypes {
-
+    //成功
     public static String SUCCESS = "Success";
+    //失败
     public static String FAILURE = "Failure";
 
 }

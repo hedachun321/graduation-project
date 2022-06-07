@@ -48,10 +48,11 @@ public class CoapTransportService {
 
     @PostConstruct
     public void init() throws UnknownHostException {
-        log.info("Starting CoAP transport...");
-        log.info("Starting CoAP transport server");
-
+        log.info("开始 CoAP 传输...");
+        log.info("开启 CoAP transport 服务");
+        //初始化coap server服务
         this.server = new CoapServer();
+        //创建coap资源服务
         createResources();
         Resource root = this.server.getRoot();
         TbCoapServerMessageDeliverer messageDeliverer = new TbCoapServerMessageDeliverer(root);
@@ -59,14 +60,15 @@ public class CoapTransportService {
 
         InetAddress addr = InetAddress.getByName(coapTransportContext.getHost());
         InetSocketAddress sockAddr = new InetSocketAddress(addr, coapTransportContext.getPort());
-
+        //绑定地址和端口号
         CoapEndpoint.Builder coapEndpoitBuilder = new CoapEndpoint.Builder();
         coapEndpoitBuilder.setInetSocketAddress(sockAddr);
         CoapEndpoint coapEndpoint = coapEndpoitBuilder.build();
-
+        //添加coap节点
         server.addEndpoint(coapEndpoint);
+        //启动服务
         server.start();
-        log.info("CoAP transport started!");
+        log.info("CoAP transport 已开始!");
     }
 
     private void createResources() {

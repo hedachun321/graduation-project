@@ -129,7 +129,7 @@ import java.util.stream.Collectors;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
- * @author Andrew Shvayka
+ * 2022.04.25
  */
 public class RestClient implements ClientHttpRequestInterceptor, Closeable {
     private static final String JWT_TOKEN_HEADER_PARAM = "X-Authorization";
@@ -179,14 +179,14 @@ public class RestClient implements ClientHttpRequestInterceptor, Closeable {
     public String getRefreshToken() {
         return refreshToken;
     }
-
+    //刷新Token
     public void refreshToken() {
         Map<String, String> refreshTokenRequest = new HashMap<>();
         refreshTokenRequest.put("refreshToken", refreshToken);
         ResponseEntity<JsonNode> tokenInfo = restTemplate.postForEntity(baseURL + "/api/auth/token", refreshTokenRequest, JsonNode.class);
         setTokenInfo(tokenInfo.getBody());
     }
-
+    //登录请求
     public void login(String username, String password) {
         Map<String, String> loginRequest = new HashMap<>();
         loginRequest.put("username", username);
@@ -194,13 +194,13 @@ public class RestClient implements ClientHttpRequestInterceptor, Closeable {
         ResponseEntity<JsonNode> tokenInfo = restTemplate.postForEntity(baseURL + "/api/auth/login", loginRequest, JsonNode.class);
         setTokenInfo(tokenInfo.getBody());
     }
-
+    //设置Token信息
     private void setTokenInfo(JsonNode tokenInfo) {
         this.token = tokenInfo.get("token").asText();
         this.refreshToken = tokenInfo.get("refreshToken").asText();
         restTemplate.getInterceptors().add(this);
     }
-
+    //获取用户设置
     public Optional<AdminSettings> getAdminSettings(String key) {
         try {
             ResponseEntity<AdminSettings> adminSettings = restTemplate.getForEntity(baseURL + "/api/admin/settings/{key}", AdminSettings.class, key);
@@ -213,7 +213,7 @@ public class RestClient implements ClientHttpRequestInterceptor, Closeable {
             }
         }
     }
-
+    //保存用户设置
     public AdminSettings saveAdminSettings(AdminSettings adminSettings) {
         return restTemplate.postForEntity(baseURL + "/api/admin/settings", adminSettings, AdminSettings.class).getBody();
     }

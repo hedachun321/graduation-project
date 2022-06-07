@@ -124,14 +124,16 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        log.trace("[{}] Processing msg: {}", sessionId, msg);
+        log.trace("[{}] 处理 msg: {}", sessionId, msg);
         try {
             if (msg instanceof MqttMessage) {
                 MqttMessage message = (MqttMessage) msg;
+                //判断收到的数据是否是mqttmessage
                 if (message.decoderResult().isSuccess()) {
+                    //如果是则进入
                     processMqttMsg(ctx, message);
                 } else {
-                    log.error("[{}] Message processing failed: {}", sessionId, message.decoderResult().cause().getMessage());
+                    log.error("[{}] Message 处理失败: {}", sessionId, message.decoderResult().cause().getMessage());
                     ctx.close();
                 }
             } else {
@@ -150,6 +152,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
             return;
         }
         deviceSessionCtx.setChannel(ctx);
+        //检验连接
         if (CONNECT.equals(msg.fixedHeader().messageType())) {
             processConnect(ctx, (MqttConnectMessage) msg);
         } else if (deviceSessionCtx.isProvisionOnly()) {
@@ -475,8 +478,9 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
             }
         }
     }
-
+    //连接请求认证
     private void processAuthTokenConnect(ChannelHandlerContext ctx, MqttConnectMessage connectMessage) {
+        //取出连接userName
         String userName = connectMessage.payload().userName();
         log.info("[{}] Processing connect msg for client with user name: {}!", sessionId, userName);
         TransportProtos.ValidateBasicMqttCredRequestMsg.Builder request = TransportProtos.ValidateBasicMqttCredRequestMsg.newBuilder()
@@ -484,13 +488,16 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         if (userName != null) {
             request.setUserName(userName);
         }
+        //取出连接密码password
         byte[] passwordBytes = connectMessage.payload().passwordInBytes();
         if (passwordBytes != null) {
             String password = new String(passwordBytes, CharsetUtil.UTF_8);
             request.setPassword(password);
         }
+        //构造protobuf的类(方便传输与解析)，交给transportService处理。此时会使用到源码解析第三篇DefaultTransportService的解析的相关信息了解process的处理。参阅下方①的详细解析。
         transportService.process(DeviceTransportType.MQTT, request.build(),
                 new TransportServiceCallback<>() {
+                    //连接成功
                     @Override
                     public void onSuccess(ValidateDeviceCredentialsResponse msg) {
                         onValidateDeviceResponse(msg, ctx, connectMessage);
@@ -499,6 +506,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
                     @Override
                     public void onError(Throwable e) {
                         log.trace("[{}] Failed to process credentials: {}", address, userName, e);
+                        //无法连接mqtt
                         ctx.writeAndFlush(createMqttConnAckMsg(MqttConnectReturnCode.CONNECTION_REFUSED_SERVER_UNAVAILABLE, connectMessage));
                         ctx.close();
                     }

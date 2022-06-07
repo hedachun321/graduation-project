@@ -24,6 +24,7 @@ import io.netty.handler.ssl.SslHandler;
 
 /**
  * @author Andrew Shvayka
+ * 2022.02.12
  */
 public class MqttTransportServerInitializer extends ChannelInitializer<SocketChannel> {
 
@@ -32,7 +33,7 @@ public class MqttTransportServerInitializer extends ChannelInitializer<SocketCha
     public MqttTransportServerInitializer(MqttTransportContext context) {
         this.context = context;
     }
-
+    //初始化mqtt通道
     @Override
     public void initChannel(SocketChannel ch) {
         ChannelPipeline pipeline = ch.pipeline();
@@ -41,9 +42,10 @@ public class MqttTransportServerInitializer extends ChannelInitializer<SocketCha
             sslHandler = context.getSslHandlerProvider().getSslHandler();
             pipeline.addLast(sslHandler);
         }
+        //添加基于netty的MqttDecoder 和 MqttEnconder，可以忽略mqtt消息的编码工作
         pipeline.addLast("decoder", new MqttDecoder(context.getMaxPayloadSize()));
         pipeline.addLast("encoder", MqttEncoder.INSTANCE);
-
+        //创建mqtt传输监听器，监听mqtt消息传输
         MqttTransportHandler handler = new MqttTransportHandler(context,sslHandler);
 
         pipeline.addLast(handler);

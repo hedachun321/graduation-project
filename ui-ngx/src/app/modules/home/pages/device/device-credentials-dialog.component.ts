@@ -82,8 +82,9 @@ export class DeviceCredentialsDialogComponent extends
     const customErrorState = !!(control && control.invalid && this.submitted);
     return originalErrorState || customErrorState;
   }
-
+  //加载设备凭证
   loadDeviceCredentials() {
+    //获取当前设备凭证
     this.deviceService.getDeviceCredentials(this.data.deviceId).subscribe(
       (deviceCredentials) => {
         this.deviceCredentials = deviceCredentials;
@@ -93,11 +94,11 @@ export class DeviceCredentialsDialogComponent extends
       }
     );
   }
-
+  //关闭对话框
   cancel(): void {
     this.dialogRef.close(null);
   }
-
+  //保存设备信息
   save(): void {
     this.submitted = true;
     const deviceCredentialsValue = this.deviceCredentialsFormGroup.value.credential;

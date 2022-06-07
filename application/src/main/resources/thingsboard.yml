@@ -1,27 +1,12 @@
-#
-# Copyright © 2016-2021 The Thingsboard Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 server:
-  # Server bind address
+  # 服务地址
   address: "${HTTP_BIND_ADDRESS:0.0.0.0}"
-  # Server bind port
+  # 服务端口
   port: "${HTTP_BIND_PORT:8080}"
-  # Server SSL configuration
+  # 服务SSL配置
   ssl:
-    # Enable/disable SSL support
+    # 开启/关闭SL
     enabled: "${SSL_ENABLED:false}"
     # Path to the key store that holds the SSL certificate
     key-store: "${SSL_KEY_STORE:classpath:keystore/keystore.p12}"
@@ -451,6 +436,7 @@ spring:
   datasource:
     driverClassName: "${SPRING_DRIVER_CLASS_NAME:org.postgresql.Driver}"
     url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/thingsboard}"
+    # url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://121.40.168.41:5432/thingsboard}"
     username: "${SPRING_DATASOURCE_USERNAME:postgres}"
     password: "${SPRING_DATASOURCE_PASSWORD:postgres}"
     hikari:

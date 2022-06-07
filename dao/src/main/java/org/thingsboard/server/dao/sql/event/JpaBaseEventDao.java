@@ -68,8 +68,9 @@ public class JpaBaseEventDao extends JpaAbstractDao<EventEntity, Event> implemen
 
     @Override
     public Event save(TenantId tenantId, Event event) {
-        log.debug("Save event [{}] ", event);
+        log.debug("保存 event [{}] ", event);
         if (event.getId() == null) {
+            //创建uuid
             UUID timeBased = Uuids.timeBased();
             event.setId(new EventId(timeBased));
             event.setCreatedTime(Uuids.unixTimestamp(timeBased));
@@ -84,6 +85,7 @@ public class JpaBaseEventDao extends JpaAbstractDao<EventEntity, Event> implemen
         if (StringUtils.isEmpty(event.getUid())) {
             event.setUid(event.getId().toString());
         }
+        //保存实体
         return save(new EventEntity(event), false).orElse(null);
     }
 
@@ -159,9 +161,9 @@ public class JpaBaseEventDao extends JpaAbstractDao<EventEntity, Event> implemen
     }
 
     public Optional<Event> save(EventEntity entity, boolean ifNotExists) {
-        log.debug("Save event [{}] ", entity);
+        log.debug("保存 event [{}] ", entity);
         if (entity.getTenantId() == null) {
-            log.trace("Save system event with predefined id {}", systemTenantId);
+            log.trace("保存系统事件通过 predefined id {}", systemTenantId);
             entity.setTenantId(systemTenantId);
         }
         if (entity.getUuid() == null) {

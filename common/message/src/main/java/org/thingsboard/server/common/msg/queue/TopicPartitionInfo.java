@@ -22,7 +22,7 @@ import org.thingsboard.server.common.data.id.TenantId;
 
 import java.util.Objects;
 import java.util.Optional;
-
+//主题分区信息2022.02.15
 @ToString
 public class TopicPartitionInfo {
 

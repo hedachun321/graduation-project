@@ -131,8 +131,10 @@ public class DefaultTransportApiService implements TransportApiService {
     @Override
     public ListenableFuture<TbProtoQueueMsg<TransportApiResponseMsg>> handle(TbProtoQueueMsg<TransportApiRequestMsg> tbProtoQueueMsg) {
         TransportApiRequestMsg transportApiRequestMsg = tbProtoQueueMsg.getValue();
+        //protobuf构造的类中判定是否包含需要验证的信息块
         if (transportApiRequestMsg.hasValidateTokenRequestMsg()) {
             ValidateDeviceTokenRequestMsg msg = transportApiRequestMsg.getValidateTokenRequestMsg();
+            //调用validateCredentials，查询设备信息，并将结果交由第二个Futures进一步处理
             return Futures.transform(validateCredentials(msg.getToken(), DeviceCredentialsType.ACCESS_TOKEN),
                     value -> new TbProtoQueueMsg<>(tbProtoQueueMsg.getKey(), value, tbProtoQueueMsg.getHeaders()), MoreExecutors.directExecutor());
         } else if (transportApiRequestMsg.hasValidateBasicMqttCredRequestMsg()) {
@@ -161,6 +163,7 @@ public class DefaultTransportApiService implements TransportApiService {
         //TODO: Make async and enable caching
         DeviceCredentials credentials = deviceCredentialsService.findDeviceCredentialsByCredentialsId(credentialsId);
         if (credentials != null && credentials.getCredentialsType() == credentialsType) {
+            //获取设备信息通过设备凭证
             return getDeviceInfo(credentials.getDeviceId(), credentials);
         } else {
             return getEmptyTransportApiResponseFuture();

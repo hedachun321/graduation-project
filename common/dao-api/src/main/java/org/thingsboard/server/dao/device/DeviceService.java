@@ -87,4 +87,6 @@ public interface DeviceService {
 
     Device saveDevice(ProvisionRequest provisionRequest, DeviceProfile profile);
 
+    Long getDevicesTotal();
+
 }

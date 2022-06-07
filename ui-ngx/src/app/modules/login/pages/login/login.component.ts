@@ -31,14 +31,14 @@ import { OAuth2ClientInfo } from '@shared/models/oauth2.models';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent extends PageComponent implements OnInit {
-
+  // 登录初始值
   loginFormGroup = this.fb.group({
     username: '',
     password: ''
   });
   oauth2Clients: Array<OAuth2ClientInfo> = null;
   hidePassword = true;
-  
+
   constructor(protected store: Store<AppState>,
               private authService: AuthService,
               public fb: FormBuilder,
@@ -49,14 +49,16 @@ export class LoginComponent extends PageComponent implements OnInit {
   ngOnInit() {
     this.oauth2Clients = this.authService.oauth2Clients;
   }
-
+  //登录函数
   login(): void {
     if (this.loginFormGroup.valid) {
       this.authService.login(this.loginFormGroup.value).subscribe(
         () => {},
+        //校验失败
         (error: HttpErrorResponse) => {
           if (error && error.error && error.error.errorCode) {
             if (error.error.errorCode === Constants.serverErrorCode.credentialsExpired) {
+              //重置密码
               this.router.navigateByUrl(`login/resetExpiredPassword?resetToken=${error.error.resetToken}`);
             }
           }

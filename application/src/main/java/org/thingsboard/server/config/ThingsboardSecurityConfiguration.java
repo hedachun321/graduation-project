@@ -67,7 +67,9 @@ public class ThingsboardSecurityConfiguration extends WebSecurityConfigurerAdapt
     public static final String JWT_TOKEN_QUERY_PARAM = "token";
 
     public static final String WEBJARS_ENTRY_POINT = "/webjars/**";
+    //设备api
     public static final String DEVICE_API_ENTRY_POINT = "/api/v1/**";
+    //登录api
     public static final String FORM_BASED_LOGIN_ENTRY_POINT = "/api/auth/login";
     public static final String PUBLIC_LOGIN_ENTRY_POINT = "/api/auth/login/public";
     public static final String TOKEN_REFRESH_ENTRY_POINT = "/api/auth/token";
@@ -115,21 +117,24 @@ public class ThingsboardSecurityConfiguration extends WebSecurityConfigurerAdapt
     @Autowired private ObjectMapper objectMapper;
 
     @Autowired private RateLimitProcessingFilter rateLimitProcessingFilter;
-
+    //创建登录请求过滤器
     @Bean
     protected RestLoginProcessingFilter buildRestLoginProcessingFilter() throws Exception {
+        //创建登录请求过滤器
         RestLoginProcessingFilter filter = new RestLoginProcessingFilter(FORM_BASED_LOGIN_ENTRY_POINT, successHandler, failureHandler, objectMapper);
+        //设置过滤器认证管理
         filter.setAuthenticationManager(this.authenticationManager);
+        //返回过滤器
         return filter;
     }
-
+    //
     @Bean
     protected RestPublicLoginProcessingFilter buildRestPublicLoginProcessingFilter() throws Exception {
         RestPublicLoginProcessingFilter filter = new RestPublicLoginProcessingFilter(PUBLIC_LOGIN_ENTRY_POINT, successHandler, failureHandler, objectMapper);
         filter.setAuthenticationManager(this.authenticationManager);
         return filter;
     }
-
+    //jwttoken认证执行过滤器
     protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter() throws Exception {
         List<String> pathsToSkip = new ArrayList<>(Arrays.asList(NON_TOKEN_BASED_AUTH_ENTRY_POINTS));
         pathsToSkip.addAll(Arrays.asList(WS_TOKEN_BASED_AUTH_ENTRY_POINT, TOKEN_REFRESH_ENTRY_POINT, FORM_BASED_LOGIN_ENTRY_POINT,
@@ -140,9 +145,10 @@ public class ThingsboardSecurityConfiguration extends WebSecurityConfigurerAdapt
         filter.setAuthenticationManager(this.authenticationManager);
         return filter;
     }
-
+    //刷新token过滤器
     @Bean
     protected RefreshTokenProcessingFilter buildRefreshTokenProcessingFilter() throws Exception {
+        //创建刷新Token过滤器
         RefreshTokenProcessingFilter filter = new RefreshTokenProcessingFilter(TOKEN_REFRESH_ENTRY_POINT, successHandler, failureHandler, objectMapper);
         filter.setAuthenticationManager(this.authenticationManager);
         return filter;
@@ -182,7 +188,7 @@ public class ThingsboardSecurityConfiguration extends WebSecurityConfigurerAdapt
 
     @Autowired
     private OAuth2AuthorizationRequestResolver oAuth2AuthorizationRequestResolver;
-
+    //配置认证规则
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.headers().cacheControl().and().frameOptions().disable()
@@ -197,9 +203,12 @@ public class ThingsboardSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .and()
                 .authorizeRequests()
                 .antMatchers(WEBJARS_ENTRY_POINT).permitAll() // Webjars
+                //允许设备api接入
                 .antMatchers(DEVICE_API_ENTRY_POINT).permitAll() // Device HTTP Transport API
+                //允许/api/auth/login通过
                 .antMatchers(FORM_BASED_LOGIN_ENTRY_POINT).permitAll() // Login end-point
                 .antMatchers(PUBLIC_LOGIN_ENTRY_POINT).permitAll() // Public login end-point
+                //允许Token刷新通过
                 .antMatchers(TOKEN_REFRESH_ENTRY_POINT).permitAll() // Token refresh end-point
                 .antMatchers(NON_TOKEN_BASED_AUTH_ENTRY_POINTS).permitAll() // static resources, user activation and password reset end-points
                 .and()
@@ -223,7 +232,7 @@ public class ThingsboardSecurityConfiguration extends WebSecurityConfigurerAdapt
                     .authorizationRequestResolver(oAuth2AuthorizationRequestResolver)
                     .and()
                     .loginPage("/oauth2Login")
-                    //自定义登录界面
+                    //自定义oauth2登录界面
                     .loginProcessingUrl(oauth2Configuration.getLoginProcessingUrl())
                     //授权成功处理器
                     .successHandler(oauth2AuthenticationSuccessHandler)

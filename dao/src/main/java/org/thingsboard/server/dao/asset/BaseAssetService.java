@@ -108,6 +108,7 @@ public class BaseAssetService extends AbstractEntityService implements AssetServ
 
     @Override
     public Asset findAssetById(TenantId tenantId, AssetId assetId) {
+        //打印日志，执行查找资产通过id
         log.trace("Executing findAssetById [{}]", assetId);
         validateId(assetId, INCORRECT_ASSET_ID + assetId);
         return assetDao.findById(tenantId, assetId.getId());
@@ -128,19 +129,22 @@ public class BaseAssetService extends AbstractEntityService implements AssetServ
         return assetDao.findAssetsByTenantIdAndName(tenantId.getId(), name)
                 .orElse(null);
     }
-
+    //配置资产缓存，资产租户id和租户名字为键
     @CacheEvict(cacheNames = ASSET_CACHE, key = "{#asset.tenantId, #asset.name}")
     @Override
     public Asset saveAsset(Asset asset) {
-        log.trace("Executing saveAsset [{}]", asset);
+        //输出正在执行资产保存
+        log.trace("正在执行资产保存 [{}]", asset);
+        //数据校验
         assetValidator.validate(asset, Asset::getTenantId);
         Asset savedAsset;
         try {
+            //执行资产保存，传入资产实体
             savedAsset = assetDao.save(asset.getTenantId(), asset);
         } catch (Exception t) {
             ConstraintViolationException e = extractConstraintViolationException(t).orElse(null);
             if (e != null && e.getConstraintName() != null && e.getConstraintName().equalsIgnoreCase("asset_name_unq_key")) {
-                throw new DataValidationException("Asset with such name already exists!");
+                throw new DataValidationException("资产名字已存在，保存失败！");
             } else {
                 throw t;
             }

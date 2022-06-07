@@ -50,6 +50,7 @@ public abstract class JpaAbstractDao<E extends BaseEntity<D>, D>
     public D save(TenantId tenantId, D domain) {
         E entity;
         try {
+            //创建实体
             entity = getEntityClass().getConstructor(domain.getClass()).newInstance(domain);
         } catch (Exception e) {
             log.error("Can't create entity for domain object {}", domain, e);
@@ -68,8 +69,10 @@ public abstract class JpaAbstractDao<E extends BaseEntity<D>, D>
 
     @Override
     public D findById(TenantId tenantId, UUID key) {
+        //过去资产通过key
         log.debug("Get entity by key {}", key);
         Optional<E> entity = getCrudRepository().findById(key);
+        //传入实体，查询数据库
         return DaoUtil.getData(entity);
     }
 

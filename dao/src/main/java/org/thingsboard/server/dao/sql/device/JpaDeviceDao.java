@@ -224,6 +224,11 @@ public class JpaDeviceDao extends JpaAbstractSearchTextDao<DeviceEntity, Device>
         return deviceRepository.countByTenantId(tenantId.getId());
     }
 
+    @Override
+    public Long getDevicesTotal() {
+        return deviceRepository.getDevicesTotal();
+    }
+
     private List<EntitySubtype> convertTenantDeviceTypesToDto(UUID tenantId, List<String> types) {
         List<EntitySubtype> list = Collections.emptyList();
         if (types != null && !types.isEmpty()) {

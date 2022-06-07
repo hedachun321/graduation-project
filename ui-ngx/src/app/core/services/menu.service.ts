@@ -33,37 +33,51 @@ export class MenuService {
 
   menuSections$: Subject<Array<MenuSection>> = new BehaviorSubject<Array<MenuSection>>([]);
   homeSections$: Subject<Array<HomeSection>> = new BehaviorSubject<Array<HomeSection>>([]);
-
+  //菜单构造器
   constructor(private store: Store<AppState>, private authService: AuthService) {
     this.store.pipe(select(selectIsAuthenticated)).subscribe(
       (authenticated: boolean) => {
+        //如果认证用户成功！
         if (authenticated) {
+          //构造菜单
           this.buildMenu();
         }
       }
     );
   }
-
+  //初始化菜单
   private buildMenu() {
     this.store.pipe(select(selectAuthUser), take(1)).subscribe(
       (authUser: AuthUser) => {
         if (authUser) {
+          //定义菜单数组
           let menuSections: Array<MenuSection>;
+          //定义主页数组
           let homeSections: Array<HomeSection>;
           switch (authUser.authority) {
+            //初始化管理员菜单
             case Authority.SYS_ADMIN:
+              //获取初始化管理员菜单
               menuSections = this.buildSysAdminMenu(authUser);
+              //获取初始化主页菜单
               homeSections = this.buildSysAdminHome(authUser);
               break;
+            //初始化租户菜单
             case Authority.TENANT_ADMIN:
+              //获取初始化租户菜单
               menuSections = this.buildTenantAdminMenu(authUser);
+              //获取初始化租户主页
               homeSections = this.buildTenantAdminHome(authUser);
               break;
+            //初始化客户菜单
             case Authority.CUSTOMER_USER:
+              //获取初始化客户菜单
               menuSections = this.buildCustomerUserMenu(authUser);
+              //获取初始化客户主页
               homeSections = this.buildCustomerUserHome(authUser);
               break;
           }
+          //赋值
           this.menuSections$.next(menuSections);
           this.homeSections$.next(homeSections);
         }
@@ -214,10 +228,11 @@ export class MenuService {
     );
     return homeSections;
   }
-
+  //初始化租户菜单
   private buildTenantAdminMenu(authUser: any): Array<MenuSection> {
     const sections: Array<MenuSection> = [];
     sections.push(
+      //主页
       {
         id: guid(),
         name: 'home.home',
@@ -226,6 +241,7 @@ export class MenuService {
         notExact: true,
         icon: 'home'
       },
+      //规则链
       {
         id: guid(),
         name: 'rulechain.rulechains',
@@ -233,6 +249,7 @@ export class MenuService {
         path: '/ruleChains',
         icon: 'settings_ethernet'
       },
+      //客户
       {
         id: guid(),
         name: 'customer.customers',
@@ -240,6 +257,7 @@ export class MenuService {
         path: '/customers',
         icon: 'supervisor_account'
       },
+      //资产
       {
         id: guid(),
         name: 'asset.assets',
@@ -247,6 +265,7 @@ export class MenuService {
         path: '/assets',
         icon: 'domain'
       },
+      //设备
       {
         id: guid(),
         name: 'device.devices',
@@ -254,6 +273,7 @@ export class MenuService {
         path: '/devices',
         icon: 'devices_other'
       },
+      //设备属性
       {
         id: guid(),
         name: 'device-profile.device-profiles',
@@ -262,13 +282,15 @@ export class MenuService {
         icon: 'mdi:alpha-d-box',
         isMdiIcon: true
       },
-      {
+      //实体视图
+/*      {
         id: guid(),
         name: 'entity-view.entity-views',
         type: 'link',
         path: '/entityViews',
         icon: 'view_quilt'
-      },
+      },*/
+      //部件库
       {
         id: guid(),
         name: 'widget.widget-library',
@@ -276,6 +298,7 @@ export class MenuService {
         path: '/widgets-bundles',
         icon: 'now_widgets'
       },
+      //仪表盘
       {
         id: guid(),
         name: 'dashboard.dashboards',
@@ -283,6 +306,7 @@ export class MenuService {
         path: '/dashboards',
         icon: 'dashboards'
       },
+      //主页设置
       {
         id: guid(),
         name: 'admin.home-settings',
@@ -290,21 +314,23 @@ export class MenuService {
         path: '/settings/home',
         icon: 'settings_applications'
       },
-      {
+      //审计日志
+/*      {
         id: guid(),
         name: 'audit-log.audit-logs',
         type: 'link',
         path: '/auditLogs',
         icon: 'track_changes'
-      },
-      {
+      },*/
+      //api使用情况
+/*      {
         id: guid(),
         name: 'api-usage.api-usage',
         type: 'link',
         path: '/usage',
         icon: 'insert_chart',
         notExact: true
-      }
+      }*/
     );
     return sections;
   }
@@ -358,7 +384,7 @@ export class MenuService {
           }
         ]
       },
-      {
+/*      {
         name: 'entity-view.management',
         places: [
           {
@@ -367,7 +393,7 @@ export class MenuService {
             path: '/entityViews'
           }
         ]
-      },
+      },*/
       {
         name: 'dashboard.management',
         places: [
@@ -382,7 +408,7 @@ export class MenuService {
             path: '/dashboards'
           }
         ]
-      },
+      }/*,
       {
         name: 'audit-log.audit',
         places: [
@@ -397,7 +423,7 @@ export class MenuService {
             path: '/usage'
           }
         ]
-      }
+      }*/
     );
     return homeSections;
   }

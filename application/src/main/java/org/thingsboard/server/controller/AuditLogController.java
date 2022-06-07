@@ -38,12 +38,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+/*
+审计日志api
+ */
 @RestController
 @TbCoreComponent
 @RequestMapping("/api")
 public class AuditLogController extends BaseController {
-
+    //获取客户审计日志
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/audit/logs/customer/{customerId}", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody
@@ -67,7 +69,7 @@ public class AuditLogController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取用户审计日志通过用户id
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/audit/logs/user/{userId}", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody
@@ -91,7 +93,7 @@ public class AuditLogController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取实体审计日志通过实体id
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/audit/logs/entity/{entityType}/{entityId}", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody
@@ -117,7 +119,7 @@ public class AuditLogController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取租户状态下的审计日志
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/audit/logs", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody

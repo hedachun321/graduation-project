@@ -118,7 +118,7 @@ public class UserServiceImpl extends AbstractEntityService implements UserServic
 
     @Override
     public User saveUser(User user) {
-        log.trace("Executing saveUser [{}]", user);
+        log.trace("正在执行保存用户 [{}]", user);
         userValidator.validate(user, User::getTenantId);
         if (!userLoginCaseSensitive) {
             user.setEmail(user.getEmail().toLowerCase());
@@ -211,6 +211,7 @@ public class UserServiceImpl extends AbstractEntityService implements UserServic
     @Override
     public UserCredentials replaceUserCredentials(TenantId tenantId, UserCredentials userCredentials) {
         log.trace("Executing replaceUserCredentials [{}]", userCredentials);
+        //校验
         userCredentialsValidator.validate(userCredentials, data -> tenantId);
         userCredentialsDao.removeById(tenantId, userCredentials.getUuidId());
         userCredentials.setId(null);
@@ -341,6 +342,7 @@ public class UserServiceImpl extends AbstractEntityService implements UserServic
     }
 
     private UserCredentials saveUserCredentialsAndPasswordHistory(TenantId tenantId, UserCredentials userCredentials) {
+        //保存
         UserCredentials result = userCredentialsDao.save(tenantId, userCredentials);
         User user = findUserById(tenantId, userCredentials.getUserId());
         if (userCredentials.getPassword() != null) {

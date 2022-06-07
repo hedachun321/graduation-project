@@ -105,7 +105,7 @@ public class BaseTimeseriesService implements TimeseriesService {
     public ListenableFuture<List<TsKvEntry>> findLatest(TenantId tenantId, EntityId entityId, Collection<String> keys) {
         validate(entityId);
         List<ListenableFuture<TsKvEntry>> futures = Lists.newArrayListWithExpectedSize(keys.size());
-        keys.forEach(key -> Validator.validateString(key, "Incorrect key " + key));
+        keys.forEach(key -> Validator.validateString(key, "键值不正确 " + key));
         keys.forEach(key -> futures.add(timeseriesLatestDao.findLatest(tenantId, entityId, key)));
         return Futures.allAsList(futures);
     }

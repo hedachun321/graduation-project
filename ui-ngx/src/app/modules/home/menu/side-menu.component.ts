@@ -23,8 +23,9 @@ import { MenuSection } from '@core/services/menu.models';
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.scss']
 })
+//侧边菜单组件初始化
 export class SideMenuComponent implements OnInit {
-
+  //获取初始化侧边菜单页面
   menuSections$ = this.menuService.menuSections();
 
   constructor(private menuService: MenuService) {

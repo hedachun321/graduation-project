@@ -93,22 +93,23 @@ public class CoapTransportResource extends AbstractCoapTransportResource {
             response.getOptions().setObserve(notificationCounter.getAndIncrement());
         } // ObserveLayer takes care of the else case
     }
-
+    //处理get资源
     @Override
     protected void processHandleGet(CoapExchange exchange) {
+        //获取coap设备凭证
         Optional<FeatureType> featureType = getFeatureType(exchange.advanced().getRequest());
         if (featureType.isEmpty()) {
-            log.trace("Missing feature type parameter");
+            log.trace("参数为空");
             exchange.respond(CoAP.ResponseCode.BAD_REQUEST);
         } else if (featureType.get() == FeatureType.TELEMETRY) {
-            log.trace("Can't fetch/subscribe to timeseries updates");
+            log.trace("无法获取/订阅时间序列更新");
             exchange.respond(CoAP.ResponseCode.BAD_REQUEST);
         } else if (exchange.getRequestOptions().hasObserve()) {
             processExchangeGetRequest(exchange, featureType.get());
         } else if (featureType.get() == FeatureType.ATTRIBUTES) {
             processRequest(exchange, SessionMsgType.GET_ATTRIBUTES_REQUEST);
         } else {
-            log.trace("Invalid feature type parameter");
+            log.trace("无效的参数类型");
             exchange.respond(CoAP.ResponseCode.BAD_REQUEST);
         }
     }
@@ -123,21 +124,26 @@ public class CoapTransportResource extends AbstractCoapTransportResource {
         }
         processRequest(exchange, sessionMsgType);
     }
-
+    //处理post请求
     @Override
     protected void processHandlePost(CoapExchange exchange) {
+        //获取post请求的第4个参数，也就是设备凭证
         Optional<FeatureType> featureType = getFeatureType(exchange.advanced().getRequest());
+        //请求参数为空，则返回错误日志
         if (featureType.isEmpty()) {
-            log.trace("Missing feature type parameter");
+            log.trace("缺少类型参数");
+            //返回错误结果BAD_REQUEST
             exchange.respond(CoAP.ResponseCode.BAD_REQUEST);
         } else {
             switch (featureType.get()) {
                 case ATTRIBUTES:
                     processRequest(exchange, SessionMsgType.POST_ATTRIBUTES_REQUEST);
                     break;
+                //处理遥测数据
                 case TELEMETRY:
                     processRequest(exchange, SessionMsgType.POST_TELEMETRY_REQUEST);
                     break;
+                //处理RPC
                 case RPC:
                     Optional<Integer> requestId = getRequestId(exchange.advanced().getRequest());
                     if (requestId.isPresent()) {
@@ -182,12 +188,14 @@ public class CoapTransportResource extends AbstractCoapTransportResource {
     }
 
     private void processRequest(CoapExchange exchange, SessionMsgType type) {
+        //记录请求相关信息
         log.trace("Processing {}", exchange.advanced().getRequest());
         exchange.accept();
         Exchange advanced = exchange.advanced();
         Request request = advanced.getRequest();
-
+        //获取设备凭证
         Optional<DeviceTokenCredentials> credentials = decodeCredentials(request);
+        //如果为空，返回错误代码
         if (credentials.isEmpty()) {
             exchange.respond(CoAP.ResponseCode.BAD_REQUEST);
             return;
@@ -199,6 +207,7 @@ public class CoapTransportResource extends AbstractCoapTransportResource {
                     try {
                         TransportConfigurationContainer transportConfigurationContainer = getTransportConfigurationContainer(deviceProfile);
                         CoapTransportAdaptor coapTransportAdaptor = getCoapTransportAdaptor(transportConfigurationContainer.isJsonPayload());
+                        //判断逻辑，并进入相应处理类中
                         switch (type) {
                             case POST_ATTRIBUTES_REQUEST:
                                 transportService.process(sessionInfo,
@@ -207,6 +216,7 @@ public class CoapTransportResource extends AbstractCoapTransportResource {
                                         new CoapOkCallback(exchange, CoAP.ResponseCode.CREATED, CoAP.ResponseCode.INTERNAL_SERVER_ERROR));
                                 reportActivity(sessionInfo, attributeSubscriptions.contains(sessionId), rpcSubscriptions.contains(sessionId));
                                 break;
+                            //处理遥测数据
                             case POST_TELEMETRY_REQUEST:
                                 transportService.process(sessionInfo,
                                         coapTransportAdaptor.convertToPostTelemetry(sessionId, request,

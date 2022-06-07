@@ -124,6 +124,7 @@ public class DefaultTelemetrySubscriptionService extends AbstractSubscriptionSer
         boolean sysTenant = TenantId.SYS_TENANT_ID.equals(tenantId) || tenantId == null;
         if (sysTenant || apiUsageStateService.getApiUsageState(tenantId).isDbStorageEnabled()) {
             saveAndNotifyInternal(tenantId, entityId, ts, ttl, new FutureCallback<Integer>() {
+                //保存成功
                 @Override
                 public void onSuccess(Integer result) {
                     if (!sysTenant && result != null && result > 0) {

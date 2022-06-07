@@ -67,7 +67,7 @@ public class UserController extends BaseController {
     public static final String USER_ID = "userId";
     public static final String YOU_DON_T_HAVE_PERMISSION_TO_PERFORM_THIS_OPERATION = "You don't have permission to perform this operation!";
     public static final String ACTIVATE_URL_PATTERN = "%s/api/noauth/activate?activateToken=%s";
-
+    //用户token认证开关
     @Value("${security.user_token_access_enabled}")
     @Getter
     private boolean userTokenAccessEnabled;
@@ -84,7 +84,7 @@ public class UserController extends BaseController {
     @Autowired
     private SystemSecurityService systemSecurityService;
 
-
+    //获取用户id
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
     @ResponseBody
@@ -149,7 +149,7 @@ public class UserController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //保存用户
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     @ResponseBody
@@ -157,14 +157,15 @@ public class UserController extends BaseController {
                          @RequestParam(required = false, defaultValue = "true") boolean sendActivationMail,
                          HttpServletRequest request) throws ThingsboardException {
         try {
-
+                //当前认证为租户
             if (Authority.TENANT_ADMIN.equals(getCurrentUser().getAuthority())) {
                 user.setTenantId(getCurrentUser().getTenantId());
             }
-
+            //校验实体
             checkEntity(user.getId(), user, Resource.USER);
 
             boolean sendEmail = user.getId() == null && sendActivationMail;
+            //检验并保存
             User savedUser = checkNotNull(userService.saveUser(user));
             if (sendEmail) {
                 SecurityUser authUser = getCurrentUser();

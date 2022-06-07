@@ -57,7 +57,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-
+/*
+认证相关api
+ */
 @RestController
 @TbCoreComponent
 @RequestMapping("/api")
@@ -106,18 +108,25 @@ public class AuthController extends BaseController {
     public void changePassword (
             @RequestBody JsonNode changePasswordRequest) throws ThingsboardException {
         try {
+            //当前密码
             String currentPassword = changePasswordRequest.get("currentPassword").asText();
+            //新密码
             String newPassword = changePasswordRequest.get("newPassword").asText();
+            //获取当前用户
             SecurityUser securityUser = getCurrentUser();
+            //获取当前用户凭证
             UserCredentials userCredentials = userService.findUserCredentialsByUserId(TenantId.SYS_TENANT_ID, securityUser.getId());
+            //匹配当前密码和保存的密码是否相同
+            //调用passwordEncoder密码编码器
             if (!passwordEncoder.matches(currentPassword, userCredentials.getPassword())) {
-                throw new ThingsboardException("Current password doesn't match!", ThingsboardErrorCode.BAD_REQUEST_PARAMS);
+                throw new ThingsboardException("当前密码不匹配", ThingsboardErrorCode.BAD_REQUEST_PARAMS);
             }
             systemSecurityService.validatePassword(securityUser.getTenantId(), newPassword, userCredentials);
             if (passwordEncoder.matches(newPassword, userCredentials.getPassword())) {
-                throw new ThingsboardException("New password should be different from existing!", ThingsboardErrorCode.BAD_REQUEST_PARAMS);
+                throw new ThingsboardException("新密码要与旧密码不同!", ThingsboardErrorCode.BAD_REQUEST_PARAMS);
             }
             userCredentials.setPassword(passwordEncoder.encode(newPassword));
+            //保存新密码
             userService.replaceUserCredentials(securityUser.getTenantId(), userCredentials);
         } catch (Exception e) {
             throw handleException(e);
@@ -325,6 +334,7 @@ public class AuthController extends BaseController {
                     device = userAgent.device.family;
                 }
             }
+            //登出
             auditLogService.logEntityAction(
                     user.getTenantId(), user.getCustomerId(), user.getId(),
                     user.getName(), user.getId(), null, ActionType.LOGOUT, null, clientAddress, browser, os, device);

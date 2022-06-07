@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class LoginRequest {
     private String username;
     private String password;
-    //登录请求
+    //构造函数
     @JsonCreator
     public LoginRequest(@JsonProperty("username") String username, @JsonProperty("password") String password) {
         this.username = username;

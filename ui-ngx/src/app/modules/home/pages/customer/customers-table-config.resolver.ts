@@ -47,12 +47,17 @@ export class CustomersTableConfigResolver implements Resolve<EntityTableConfig<C
     this.config.entityTabsComponent = CustomerTabsComponent;
     this.config.entityTranslations = entityTypeTranslations.get(EntityType.CUSTOMER);
     this.config.entityResources = entityTypeResources.get(EntityType.CUSTOMER);
-
+    //客户表头显示
     this.config.columns.push(
+      //创建时间
       new DateEntityTableColumn<Customer>('createdTime', 'common.created-time', this.datePipe, '150px'),
+      //标题
       new EntityTableColumn<Customer>('title', 'customer.title', '25%'),
+      //邮箱
       new EntityTableColumn<Customer>('email', 'contact.email', '25%'),
-      new EntityTableColumn<Customer>('country', 'contact.country', '25%'),
+      //国家
+      /*new EntityTableColumn<Customer>('country', 'contact.country', '25%'),*/
+      //城市
       new EntityTableColumn<Customer>('city', 'contact.city', '25%')
     );
 
@@ -84,7 +89,7 @@ export class CustomersTableConfigResolver implements Resolve<EntityTableConfig<C
         icon: 'devices_other',
         isEnabled: (customer) => true,
         onAction: ($event, entity) => this.manageCustomerDevices($event, entity)
-      },
+      }/*,
       {
         name: this.translate.instant('customer.manage-customer-dashboards'),
         nameFunction: (customer) => {
@@ -95,7 +100,7 @@ export class CustomersTableConfigResolver implements Resolve<EntityTableConfig<C
         icon: 'dashboard',
         isEnabled: (customer) => true,
         onAction: ($event, entity) => this.manageCustomerDashboards($event, entity)
-      }
+      }*/
     );
 
     this.config.deleteEntityTitle = customer => this.translate.instant('customer.delete-customer-title', { customerTitle: customer.title });

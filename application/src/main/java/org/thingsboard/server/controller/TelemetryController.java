@@ -99,7 +99,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * Created by ashvayka on 22.03.18.
+ * 22.03.18.
  */
 @RestController
 @TbCoreComponent
@@ -131,7 +131,7 @@ public class TelemetryController extends BaseController {
             executor.shutdownNow();
         }
     }
-
+    //获取书属性值
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{entityType}/{entityId}/keys/attributes", method = RequestMethod.GET)
     @ResponseBody
@@ -149,7 +149,7 @@ public class TelemetryController extends BaseController {
         return accessValidator.validateEntityAndCallback(getCurrentUser(), Operation.READ_ATTRIBUTES, entityType, entityIdStr,
                 (result, tenantId, entityId) -> getAttributeKeysCallback(result, tenantId, entityId, scope));
     }
-
+    //获取属性
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{entityType}/{entityId}/values/attributes", method = RequestMethod.GET)
     @ResponseBody
@@ -172,7 +172,7 @@ public class TelemetryController extends BaseController {
         return accessValidator.validateEntityAndCallback(getCurrentUser(), Operation.READ_ATTRIBUTES, entityType, entityIdStr,
                 (result, tenantId, entityId) -> getAttributeValuesCallback(result, user, entityId, scope, keysStr));
     }
-
+    //获取设备数据键
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{entityType}/{entityId}/keys/timeseries", method = RequestMethod.GET)
     @ResponseBody
@@ -181,7 +181,7 @@ public class TelemetryController extends BaseController {
         return accessValidator.validateEntityAndCallback(getCurrentUser(), Operation.READ_TELEMETRY, entityType, entityIdStr,
                 (result, tenantId, entityId) -> Futures.addCallback(tsService.findAllLatest(tenantId, entityId), getTsKeysToResponseCallback(result), MoreExecutors.directExecutor()));
     }
-
+    //获取最新设备数据
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{entityType}/{entityId}/values/timeseries", method = RequestMethod.GET)
     @ResponseBody
@@ -220,7 +220,7 @@ public class TelemetryController extends BaseController {
                     Futures.addCallback(tsService.findAll(tenantId, entityId, queries), getTsKvListCallback(result, useStrictDataTypes), MoreExecutors.directExecutor());
                 });
     }
-
+    //保存设备属性
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{deviceId}/{scope}", method = RequestMethod.POST)
     @ResponseBody
@@ -249,7 +249,7 @@ public class TelemetryController extends BaseController {
         EntityId entityId = EntityIdFactory.getByTypeAndId(entityType, entityIdStr);
         return saveAttributes(getTenantId(), entityId, scope, request);
     }
-
+    //保存实体时间序列
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{entityType}/{entityId}/timeseries/{scope}", method = RequestMethod.POST)
     @ResponseBody
@@ -449,6 +449,7 @@ public class TelemetryController extends BaseController {
                 TenantProfile tenantProfile = tenantProfileCache.get(tenantId);
                 tenantTtl = TimeUnit.DAYS.toSeconds(((DefaultTenantProfileConfiguration) tenantProfile.getProfileData().getConfiguration()).getDefaultStorageTtlDays());
             }
+            //保存
             tsSubService.saveAndNotify(tenantId, entityId, entries, tenantTtl, new FutureCallback<Void>() {
                 @Override
                 public void onSuccess(@Nullable Void tmp) {
@@ -464,7 +465,7 @@ public class TelemetryController extends BaseController {
             });
         });
     }
-
+    //获取最新数据值
     private void getLatestTimeseriesValuesCallback(@Nullable DeferredResult<ResponseEntity> result, SecurityUser user, EntityId entityId, String keys, Boolean useStrictDataTypes) {
         ListenableFuture<List<TsKvEntry>> future;
         if (StringUtils.isEmpty(keys)) {
@@ -474,7 +475,7 @@ public class TelemetryController extends BaseController {
         }
         Futures.addCallback(future, getTsKvListCallback(result, useStrictDataTypes), MoreExecutors.directExecutor());
     }
-
+    //获取属性值
     private void getAttributeValuesCallback(@Nullable DeferredResult<ResponseEntity> result, SecurityUser user, EntityId entityId, String scope, String keys) {
         List<String> keyList = toKeysList(keys);
         FutureCallback<List<AttributeKvEntry>> callback = getAttributeValuesToResponseCallback(result, user, scope, entityId, keyList);

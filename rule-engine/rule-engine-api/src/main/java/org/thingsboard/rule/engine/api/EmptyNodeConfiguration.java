@@ -21,7 +21,9 @@ import org.thingsboard.rule.engine.api.NodeConfiguration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
+/**
+ * 2022.02.18.空节点配置
+ */
 @Data
 public class EmptyNodeConfiguration implements NodeConfiguration<EmptyNodeConfiguration> {
 

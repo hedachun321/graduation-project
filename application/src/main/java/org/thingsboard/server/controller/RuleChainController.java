@@ -97,7 +97,7 @@ public class RuleChainController extends BaseController {
 
     @Value("${actors.rule.chain.debug_mode_rate_limits_per_tenant.enabled}")
     private boolean debugPerTenantEnabled;
-
+    //获取规则链通过设备规则链id
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/ruleChain/{ruleChainId}", method = RequestMethod.GET)
     @ResponseBody

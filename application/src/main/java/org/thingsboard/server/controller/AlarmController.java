@@ -53,7 +53,7 @@ import java.util.UUID;
 public class AlarmController extends BaseController {
 
     public static final String ALARM_ID = "alarmId";
-
+    //获取警告实体通过id
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/alarm/{alarmId}", method = RequestMethod.GET)
     @ResponseBody
@@ -66,7 +66,7 @@ public class AlarmController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取警告信息通过id
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/alarm/info/{alarmId}", method = RequestMethod.GET)
     @ResponseBody
@@ -79,7 +79,7 @@ public class AlarmController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //保存警告信息
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/alarm", method = RequestMethod.POST)
     @ResponseBody
@@ -100,7 +100,7 @@ public class AlarmController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //删除警告
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/alarm/{alarmId}", method = RequestMethod.DELETE)
     @ResponseBody
@@ -114,7 +114,7 @@ public class AlarmController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //回应警告
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/alarm/{alarmId}/ack", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
@@ -132,7 +132,7 @@ public class AlarmController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //清楚警告
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/alarm/{alarmId}/clear", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
@@ -150,7 +150,7 @@ public class AlarmController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //获取警告
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/alarm/{entityType}/{entityId}", method = RequestMethod.GET)
     @ResponseBody

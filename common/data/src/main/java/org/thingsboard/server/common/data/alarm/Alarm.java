@@ -36,15 +36,23 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class Alarm extends BaseData<AlarmId> implements HasName, HasTenantId {
-
+    //租户id
     private TenantId tenantId;
+    //警告类型
     private String type;
+    //实体id
     private EntityId originator;
+    //警告安全级别
     private AlarmSeverity severity;
+    //警告状态
     private AlarmStatus status;
+    //警告开始时间
     private long startTs;
+    //警告结束时间
     private long endTs;
+    //警告回应时间
     private long ackTs;
+    //警告清楚时间
     private long clearTs;
     private transient JsonNode details;
     private boolean propagate;

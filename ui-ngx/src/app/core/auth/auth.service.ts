@@ -110,8 +110,9 @@ export class AuthService {
     );
   }
 
-
+  //登录请求
   public login(loginRequest: LoginRequest): Observable<LoginResponse> {
+    //调用后端接口进行登录验证
     return this.http.post<LoginResponse>('/api/auth/login', loginRequest, defaultHttpOptions()).pipe(
       tap((loginResponse: LoginResponse) => {
           this.setUserFromJwtToken(loginResponse.token, loginResponse.refreshToken, true);
@@ -125,7 +126,7 @@ export class AuthService {
     };
     return this.http.post<LoginResponse>('/api/auth/login/public', publicLoginRequest, defaultHttpOptions());
   }
-
+  //重置密码
   public sendResetPasswordLink(email: string) {
     return this.http.post('/api/noauth/resetPasswordByEmail',
       {email}, defaultHttpOptions());

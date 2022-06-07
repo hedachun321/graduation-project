@@ -55,6 +55,7 @@ const MAX_PUBLISH_COMMANDS = 10;
 @Injectable({
   providedIn: 'root'
 })
+//websocket服务
 export class TelemetryWebsocketService implements TelemetryService {
 
   isActive = false;
@@ -75,7 +76,7 @@ export class TelemetryWebsocketService implements TelemetryService {
   telemetryUri: string;
 
   dataStream: WebSocketSubject<TelemetryPluginCmdsWrapper | WebsocketDataMsg>;
-
+  //websocket构造器
   constructor(private store: Store<AppState>,
               private authService: AuthService,
               private ngZone: NgZone,
@@ -141,7 +142,7 @@ export class TelemetryWebsocketService implements TelemetryService {
       this.publishCommands();
     }
   }
-
+  //取消订阅
   public unsubscribe(subscriber: TelemetrySubscriber) {
     if (this.isActive) {
       subscriber.subscriptionCommands.forEach(
@@ -244,7 +245,7 @@ export class TelemetryWebsocketService implements TelemetryService {
       }
     }
   }
-
+  //打开websocket
   private openSocket(token: string) {
     const uri = `${this.telemetryUri}?token=${token}`;
     this.dataStream = webSocket(

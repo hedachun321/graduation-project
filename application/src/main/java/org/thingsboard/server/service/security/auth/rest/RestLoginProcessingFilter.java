@@ -37,7 +37,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+//登录请求过滤器
 @Slf4j
 public class RestLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -68,11 +68,12 @@ public class RestLoginProcessingFilter extends AbstractAuthenticationProcessingF
 
         LoginRequest loginRequest;
         try {
+            //获取登录请求
             loginRequest = objectMapper.readValue(request.getReader(), LoginRequest.class);
         } catch (Exception e) {
             throw new AuthenticationServiceException("Invalid login request payload");
         }
-
+        //如果账号或密码为空
         if (StringUtils.isBlank(loginRequest.getUsername()) || StringUtils.isBlank(loginRequest.getPassword())) {
             throw new AuthenticationServiceException("Username or Password not provided");
         }

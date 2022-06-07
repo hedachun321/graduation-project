@@ -50,7 +50,7 @@
     </div>
   </div>
 </mat-tab>
-<mat-tab *ngIf="entity" #deviceProvisioning="matTab"
+<!--<mat-tab *ngIf="entity" #deviceProvisioning="matTab"
          label="{{ 'device-profile.device-provisioning' | translate }}">
   <div class="mat-padding" [formGroup]="detailsForm" *ngIf="deviceProvisioning.isActive">
     <div formGroupName="profileData">
@@ -58,7 +58,7 @@
       </tb-device-profile-provision-configuration>
     </div>
   </div>
-</mat-tab>
+</mat-tab>-->
 <mat-tab *ngIf="false"
          label="{{'device-profile.profile-configuration' | translate }}" #deviceProfile="matTab">
   <div class="mat-padding" [formGroup]="detailsForm">
@@ -70,7 +70,7 @@
     </div>
   </div>
 </mat-tab>
-<mat-tab *ngIf="entity && !isEdit" #auditLogsTab="matTab"
+<!--<mat-tab *ngIf="entity && !isEdit" #auditLogsTab="matTab"
          label="{{ 'audit-log.audit-logs' | translate }}">
   <tb-audit-log-table detailsMode="true" [active]="auditLogsTab.isActive" [auditLogMode]="auditLogModes.ENTITY" [entityId]="entity.id"></tb-audit-log-table>
-</mat-tab>
+</mat-tab>-->

@@ -170,4 +170,7 @@ public interface DeviceRepository extends PagingAndSortingRepository<DeviceEntit
     Long countByDeviceProfileId(UUID deviceProfileId);
 
     Long countByTenantId(UUID tenantId);
+    //@Query("select count(id) from device")
+    @Query("SELECT COUNT(d.id) FROM DeviceEntity d")
+    Long getDevicesTotal();
 }

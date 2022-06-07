@@ -15,7 +15,9 @@
     limitations under the License.
 
 -->
+<!--客户界面-->
 <div class="tb-details-buttons" fxLayout.xs="column">
+  <!--点击跳转管理客户-->
   <button mat-raised-button color="primary"
           [disabled]="(isLoading$ | async)"
           (click)="onEntityAction($event, 'manageUsers')"
@@ -47,12 +49,14 @@
     {{'customer.delete' | translate }}
   </button>
   <div fxLayout="row" fxLayout.xs="column">
+    <!--点击客户产生的事件-->
     <button mat-raised-button
             ngxClipboard
             (cbOnSuccess)="onCustomerIdCopied($event)"
             [cbContent]="entity?.id?.id"
             [fxShow]="!isEdit">
       <mat-icon svgIcon="mdi:clipboard-arrow-left"></mat-icon>
+      <!--复制客户id-->
       <span translate>customer.copyId</span>
     </button>
   </div>

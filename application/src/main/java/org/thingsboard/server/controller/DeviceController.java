@@ -100,8 +100,10 @@ public class DeviceController extends BaseController {
     @RequestMapping(value = "/device/info/{deviceId}", method = RequestMethod.GET)
     @ResponseBody
     public DeviceInfo getDeviceInfoById(@PathVariable(DEVICE_ID) String strDeviceId) throws ThingsboardException {
+        //校验设备id
         checkParameter(DEVICE_ID, strDeviceId);
         try {
+            //将参数设备id装换为uuid
             DeviceId deviceId = new DeviceId(toUUID(strDeviceId));
             return checkDeviceInfoId(deviceId, Operation.READ);
         } catch (Exception e) {
@@ -318,7 +320,7 @@ public class DeviceController extends BaseController {
             throw handleException(e);
         }
     }
-    //分页查询设备信息
+    //分页查询租户所属信息
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/tenant/deviceInfos", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody
@@ -572,7 +574,7 @@ public class DeviceController extends BaseController {
         }
         return DataConstants.DEFAULT_SECRET_KEY;
     }
-
+    // 分配设备给租户
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/tenant/{tenantId}/device/{deviceId}", method = RequestMethod.POST)
     @ResponseBody
@@ -606,6 +608,14 @@ public class DeviceController extends BaseController {
                     ActionType.ASSIGNED_TO_TENANT, e, strTenantId);
             throw handleException(e);
         }
+    }
+    // 获取设备总数
+    @PreAuthorize("hasAuthority('TENANT_ADMIN')")
+    @RequestMapping(value = "/state/all/devices/total", method = RequestMethod.GET)
+    @ResponseBody
+    public Long getDevicesTotal(){
+        Long total = deviceService.getDevicesTotal();
+        return total;
     }
 
     private void pushAssignedFromNotification(Tenant currentTenant, TenantId newTenantId, Device assignedDevice) {

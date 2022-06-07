@@ -131,6 +131,7 @@ public class DeviceServiceImpl extends AbstractEntityService implements DeviceSe
     @Override
     public DeviceInfo findDeviceInfoById(TenantId tenantId, DeviceId deviceId) {
         log.trace("Executing findDeviceInfoById [{}]", deviceId);
+        //校验参数
         validateId(deviceId, INCORRECT_DEVICE_ID + deviceId);
         return deviceDao.findDeviceInfoById(tenantId, deviceId.getId());
     }
@@ -530,6 +531,11 @@ public class DeviceServiceImpl extends AbstractEntityService implements DeviceSe
             }
         }
         return savedDevice;
+    }
+    // 获取设备总数
+    @Override
+    public Long getDevicesTotal() {
+        return deviceDao.getDevicesTotal();
     }
 
     private DataValidator<Device> deviceValidator =

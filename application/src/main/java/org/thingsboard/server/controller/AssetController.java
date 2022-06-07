@@ -60,20 +60,22 @@ import static org.thingsboard.server.dao.asset.BaseAssetService.TB_SERVICE_QUEUE
 public class AssetController extends BaseController {
 
     public static final String ASSET_ID = "assetId";
-
+    //获取资产id
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/asset/{assetId}", method = RequestMethod.GET)
     @ResponseBody
     public Asset getAssetById(@PathVariable(ASSET_ID) String strAssetId) throws ThingsboardException {
+        //校验参数是否为空
         checkParameter(ASSET_ID, strAssetId);
         try {
+            //将资产id装换为uuid方便查询
             AssetId assetId = new AssetId(toUUID(strAssetId));
             return checkAssetId(assetId, Operation.READ);
         } catch (Exception e) {
             throw handleException(e);
         }
     }
-
+    //获取资产信息通过资产id
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/asset/info/{assetId}", method = RequestMethod.GET)
     @ResponseBody
@@ -86,26 +88,27 @@ public class AssetController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //保存资产信息
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/asset", method = RequestMethod.POST)
     @ResponseBody
     public Asset saveAsset(@RequestBody Asset asset) throws ThingsboardException {
         try {
+            //如果资产id为TB_SERVICE_QUEUE，则无法保存
             if (TB_SERVICE_QUEUE.equals(asset.getType())) {
                 throw new ThingsboardException("Unable to save asset with type " + TB_SERVICE_QUEUE, ThingsboardErrorCode.BAD_REQUEST_PARAMS);
             }
-
+            //设置资产的租户id
             asset.setTenantId(getCurrentUser().getTenantId());
-
-           checkEntity(asset.getId(), asset, Resource.ASSET);
-
+            //检验实体
+            checkEntity(asset.getId(), asset, Resource.ASSET);
+            //保存实体，同时检查实体是否 为空
             Asset savedAsset = checkNotNull(assetService.saveAsset(asset));
 
             logEntityAction(savedAsset.getId(), savedAsset,
                     savedAsset.getCustomerId(),
                     asset.getId() == null ? ActionType.ADDED : ActionType.UPDATED, null);
-
+            //返回保存的资产实体
             return savedAsset;
         } catch (Exception e) {
             logEntityAction(emptyId(EntityType.ASSET), asset,
@@ -113,7 +116,7 @@ public class AssetController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //删除资产
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/asset/{assetId}", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
@@ -136,15 +139,17 @@ public class AssetController extends BaseController {
             throw handleException(e);
         }
     }
-
+    //分配资产给客户
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/customer/{customerId}/asset/{assetId}", method = RequestMethod.POST)
     @ResponseBody
     public Asset assignAssetToCustomer(@PathVariable("customerId") String strCustomerId,
                                        @PathVariable(ASSET_ID) String strAssetId) throws ThingsboardException {
+        //校验参数
         checkParameter("customerId", strCustomerId);
         checkParameter(ASSET_ID, strAssetId);
         try {
+            //转换为uuid方便查询
             CustomerId customerId = new CustomerId(toUUID(strCustomerId));
             Customer customer = checkCustomerId(customerId, Operation.READ);
 

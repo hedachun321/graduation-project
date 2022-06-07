@@ -284,9 +284,10 @@ public abstract class BaseController {
             throw new ThingsboardException("Requested item wasn't found!", ThingsboardErrorCode.ITEM_NOT_FOUND);
         }
     }
-
+    //检验参数是否为空
     void checkParameter(String name, String param) throws ThingsboardException {
         if (StringUtils.isEmpty(param)) {
+            //抛出异常
             throw new ThingsboardException("Parameter '" + name + "' can't be empty!", ThingsboardErrorCode.BAD_REQUEST_PARAMS);
         }
     }
@@ -480,6 +481,7 @@ public abstract class BaseController {
     DeviceInfo checkDeviceInfoId(DeviceId deviceId, Operation operation) throws ThingsboardException {
         try {
             validateId(deviceId, "Incorrect deviceId " + deviceId);
+            //获取设备信息，关联当前租户账号以及设备id
             DeviceInfo device = deviceService.findDeviceInfoById(getCurrentUser().getTenantId(), deviceId);
             checkNotNull(device);
             accessControlService.checkPermission(getCurrentUser(), Resource.DEVICE, operation, deviceId, device);
@@ -524,11 +526,13 @@ public abstract class BaseController {
             throw handleException(e, false);
         }
     }
-
+    //校验资产id
     Asset checkAssetId(AssetId assetId, Operation operation) throws ThingsboardException {
         try {
             validateId(assetId, "Incorrect assetId " + assetId);
+            //调用资产服务，查找资产通过资产id
             Asset asset = assetService.findAssetById(getCurrentUser().getTenantId(), assetId);
+            //检验查询是否为空
             checkNotNull(asset);
             accessControlService.checkPermission(getCurrentUser(), Resource.ASSET, operation, assetId, asset);
             return asset;
@@ -552,6 +556,7 @@ public abstract class BaseController {
     Alarm checkAlarmId(AlarmId alarmId, Operation operation) throws ThingsboardException {
         try {
             validateId(alarmId, "Incorrect alarmId " + alarmId);
+            //查找警告
             Alarm alarm = alarmService.findAlarmByIdAsync(getCurrentUser().getTenantId(), alarmId).get();
             checkNotNull(alarm);
             accessControlService.checkPermission(getCurrentUser(), Resource.ALARM, operation, alarmId, alarm);

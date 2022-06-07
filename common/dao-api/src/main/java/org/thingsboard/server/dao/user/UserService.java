@@ -48,7 +48,7 @@ public interface UserService {
 	UserCredentials requestPasswordReset(TenantId tenantId, String email);
 
     UserCredentials requestExpiredPasswordReset(TenantId tenantId, UserCredentialsId userCredentialsId);
-
+	//替换新密码
     UserCredentials replaceUserCredentials(TenantId tenantId, UserCredentials userCredentials);
 
 	void deleteUser(TenantId tenantId, UserId userId);

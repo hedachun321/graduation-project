@@ -15,6 +15,7 @@
  */
 package org.thingsboard.server.controller.sql;
 
+import org.junit.Test;
 import org.thingsboard.server.controller.BaseDeviceControllerTest;
 import org.thingsboard.server.dao.service.DaoSqlTest;
 

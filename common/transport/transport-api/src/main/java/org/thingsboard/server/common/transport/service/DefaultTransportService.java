@@ -103,6 +103,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by ashvayka on 17.10.18.
  */
+//传输转换服务
 @Slf4j
 @Service
 @TbTransportComponent
@@ -361,7 +362,7 @@ public class DefaultTransportService implements TransportService {
                     .setSessionEvent(msg).build(), callback);
         }
     }
-
+    //处理消息
     @Override
     public void process(TransportProtos.SessionInfoProto sessionInfo, TransportProtos.PostTelemetryMsg msg, TransportServiceCallback<Void> callback) {
         int dataPoints = 0;
@@ -370,15 +371,22 @@ public class DefaultTransportService implements TransportService {
         }
         if (checkLimits(sessionInfo, msg, callback, dataPoints)) {
             reportActivityInternal(sessionInfo);
+            //获取租户id
             TenantId tenantId = new TenantId(new UUID(sessionInfo.getTenantIdMSB(), sessionInfo.getTenantIdLSB()));
+            //获取设备id
             DeviceId deviceId = new DeviceId(new UUID(sessionInfo.getDeviceIdMSB(), sessionInfo.getDeviceIdLSB()));
             MsgPackCallback packCallback = new MsgPackCallback(msg.getTsKvListCount(), new ApiStatsProxyCallback<>(tenantId, dataPoints, callback));
             for (TransportProtos.TsKvListProto tsKv : msg.getTsKvListList()) {
                 TbMsgMetaData metaData = new TbMsgMetaData();
+                //设置设备名称
                 metaData.putValue("deviceName", sessionInfo.getDeviceName());
+                //设置设备类型
                 metaData.putValue("deviceType", sessionInfo.getDeviceType());
+                //设置上传事件序列
                 metaData.putValue("ts", tsKv.getTs() + "");
+                //获取json数值
                 JsonObject json = JsonUtils.getJsonObject(tsKv.getKvList());
+                //将数据发送给规则引擎
                 sendToRuleEngine(tenantId, deviceId, sessionInfo, json, metaData, SessionMsgType.POST_TELEMETRY_REQUEST, packCallback);
 
             }
@@ -490,6 +498,7 @@ public class DefaultTransportService implements TransportService {
     public void process(TransportProtos.SessionInfoProto sessionInfo, TransportProtos.ClaimDeviceMsg msg, TransportServiceCallback<Void> callback) {
         if (checkLimits(sessionInfo, msg, callback)) {
             reportActivityInternal(sessionInfo);
+            //发送到设备Actor
             sendToDeviceActor(sessionInfo, TransportToDeviceActorMsg.newBuilder().setSessionInfo(sessionInfo)
                     .setClaimDevice(msg).build(), callback);
         }
@@ -749,6 +758,7 @@ public class DefaultTransportService implements TransportService {
     }
 
     protected void sendToDeviceActor(TransportProtos.SessionInfoProto sessionInfo, TransportToDeviceActorMsg toDeviceActorMsg, TransportServiceCallback<Void> callback) {
+        //创建tpi，此时会选择一个固定的partition id 组成的topic是tb_core
         TopicPartitionInfo tpi = partitionService.resolve(ServiceType.TB_CORE, getTenantId(sessionInfo), getDeviceId(sessionInfo));
         if (log.isTraceEnabled()) {
             log.trace("[{}][{}] Pushing to topic {} message {}", getTenantId(sessionInfo), getDeviceId(sessionInfo), tpi.getFullTopicName(), toDeviceActorMsg);
@@ -757,6 +767,7 @@ public class DefaultTransportService implements TransportService {
                 new TransportTbQueueCallback(callback) : null;
         tbCoreProducerStats.incrementTotal();
         StatsCallback wrappedCallback = new StatsCallback(transportTbQueueCallback, tbCoreProducerStats);
+        //使用tbCoreMsgProducer发送到消息队列，设置了toDeviceActorMsg
         tbCoreMsgProducer.send(tpi,
                 new TbProtoQueueMsg<>(getRoutingKey(sessionInfo),
                         ToCoreMsg.newBuilder().setToDeviceActorMsg(toDeviceActorMsg).build()),
@@ -768,11 +779,13 @@ public class DefaultTransportService implements TransportService {
         if (log.isTraceEnabled()) {
             log.trace("[{}][{}] Pushing to topic {} message {}", tenantId, tbMsg.getOriginator(), tpi.getFullTopicName(), tbMsg);
         }
+        //设置发送到规则引擎的消息
         ToRuleEngineMsg msg = ToRuleEngineMsg.newBuilder().setTbMsg(TbMsg.toByteString(tbMsg))
                 .setTenantIdMSB(tenantId.getId().getMostSignificantBits())
                 .setTenantIdLSB(tenantId.getId().getLeastSignificantBits()).build();
         ruleEngineProducerStats.incrementTotal();
         StatsCallback wrappedCallback = new StatsCallback(callback, ruleEngineProducerStats);
+        //规则引擎生产者生产消息
         ruleEngineMsgProducer.send(tpi, new TbProtoQueueMsg<>(tbMsg.getId(), msg), wrappedCallback);
     }
 
@@ -782,18 +795,21 @@ public class DefaultTransportService implements TransportService {
         DeviceProfile deviceProfile = deviceProfileCache.get(deviceProfileId);
         RuleChainId ruleChainId;
         String queueName;
-
+        //如果设备配置为空，则设备配置为默认
         if (deviceProfile == null) {
             log.warn("[{}] Device profile is null!", deviceProfileId);
             ruleChainId = null;
             queueName = ServiceQueue.MAIN;
         } else {
+            //获取规则链id
             ruleChainId = deviceProfile.getDefaultRuleChainId();
+            //获取默认的规则链名字
             String defaultQueueName = deviceProfile.getDefaultQueueName();
             queueName = defaultQueueName != null ? defaultQueueName : ServiceQueue.MAIN;
         }
-
+        //内存消息设置
         TbMsg tbMsg = TbMsg.newMsg(queueName, sessionMsgType.name(), deviceId, metaData, gson.toJson(json), ruleChainId, null);
+        //发送到规则引擎
         sendToRuleEngine(tenantId, tbMsg, callback);
     }
 

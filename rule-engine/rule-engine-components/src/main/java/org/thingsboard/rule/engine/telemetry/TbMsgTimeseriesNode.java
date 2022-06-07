@@ -55,7 +55,7 @@ public class TbMsgTimeseriesNode implements TbNode {
     private TbMsgTimeseriesNodeConfiguration config;
     private TbContext ctx;
     private long tenantProfileDefaultStorageTtl;
-
+    //规则节点初始化方法
     @Override
     public void init(TbContext ctx, TbNodeConfiguration configuration) throws TbNodeException {
         this.config = TbNodeUtils.convert(configuration, TbMsgTimeseriesNodeConfiguration.class);
@@ -63,12 +63,12 @@ public class TbMsgTimeseriesNode implements TbNode {
         ctx.addTenantProfileListener(this::onTenantProfileUpdate);
         onTenantProfileUpdate(ctx.getTenantProfile());
     }
-
+    //租户配置更新
     void onTenantProfileUpdate(TenantProfile tenantProfile) {
         DefaultTenantProfileConfiguration configuration = (DefaultTenantProfileConfiguration) tenantProfile.getProfileData().getConfiguration();
         tenantProfileDefaultStorageTtl = TimeUnit.DAYS.toSeconds(configuration.getDefaultStorageTtlDays());
     }
-
+    //当有消息到达时处理消息
     @Override
     public void onMsg(TbContext ctx, TbMsg msg) {
         if (!msg.getType().equals(SessionMsgType.POST_TELEMETRY_REQUEST.name())) {
@@ -93,6 +93,7 @@ public class TbMsgTimeseriesNode implements TbNode {
         if (ttl == 0L) {
             ttl = tenantProfileDefaultStorageTtl;
         }
+        //保存消息序列
         ctx.getTelemetryService().saveAndNotify(ctx.getTenantId(), msg.getOriginator(), tsKvEntryList, ttl, new TelemetryNodeCallback(ctx, msg));
     }
 

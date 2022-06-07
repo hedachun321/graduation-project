@@ -111,18 +111,21 @@ public class DeviceApiController {
                 }));
         return responseWriter;
     }
-
+    //http数据上传接口
     @RequestMapping(value = "/{deviceToken}/telemetry", method = RequestMethod.POST)
     public DeferredResult<ResponseEntity> postTelemetry(@PathVariable("deviceToken") String deviceToken,
                                                         @RequestBody String json, HttpServletRequest request) {
         DeferredResult<ResponseEntity> responseWriter = new DeferredResult<ResponseEntity>();
         transportContext.getTransportService().process(DeviceTransportType.DEFAULT, ValidateDeviceTokenRequestMsg.newBuilder().setToken(deviceToken).build(),
                 new DeviceAuthCallback(transportContext, responseWriter, sessionInfo -> {
+                    //获得transportService实例
                     TransportService transportService = transportContext.getTransportService();
+                    //开始处理数据
                     transportService.process(sessionInfo, JsonConverter.convertToTelemetryProto(new JsonParser().parse(json)),
                             new HttpOkCallback(responseWriter));
                     reportActivity(sessionInfo);
                 }));
+        //返回结果
         return responseWriter;
     }
 

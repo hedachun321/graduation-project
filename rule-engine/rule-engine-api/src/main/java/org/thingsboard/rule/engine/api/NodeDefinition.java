@@ -17,7 +17,9 @@ package org.thingsboard.rule.engine.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
-
+/**
+ * 2022.02.18.节点信息定义类
+ */
 @Data
 public class NodeDefinition {
 
